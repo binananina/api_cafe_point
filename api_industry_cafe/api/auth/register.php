@@ -29,8 +29,8 @@ if ($stmt->rowCount() > 0) {
     sendResponse(false, "Username already taken");
 }
 
-// Validasi role ENUM
-$allowedRoles = ["Admin", "Kasir", "Owner"];
+// Validasi role
+$allowedRoles = ["Admin", "Kasir", "Pelanggan"];
 
 if (!in_array($role, $allowedRoles)) {
     sendResponse(false, "Invalid role");

@@ -22,7 +22,6 @@ $method = $_SERVER["REQUEST_METHOD"];
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
-
 //add transaksi
     case 'create':
         $data = json_decode(file_get_contents("php://input"), true);
@@ -68,19 +67,19 @@ switch ($action) {
         break;
 
 //get all transaksi
-    // case 'getall':
-    //     $sql = "
-    //         SELECT * FROM transactions ORDER BY tanggal DESC
-    //     ";
-    //     $result = $conn->query($sql);
+    case 'getall':
+        $sql = "
+            SELECT * FROM transactions ORDER BY tanggal DESC
+        ";
+        $result = $conn->query($sql);
 
-    //     $data = [];
-    //     while ($row = $result->fetch_assoc()) {
-    //         $data[] = $row;
-    //     }
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
 
-    //     echo json_encode(["status" => "success", "data" => $data]);
-    //     break;
+        echo json_encode(["status" => "success", "data" => $data]);
+        break;
 
 
 //get by id
