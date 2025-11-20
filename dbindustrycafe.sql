@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2025 at 02:36 AM
+-- Generation Time: Nov 20, 2025 at 01:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,8 +55,17 @@ CREATE TABLE `menus` (
   `namaMenu` varchar(100) NOT NULL,
   `harga` int(11) NOT NULL,
   `stok` int(11) DEFAULT NULL,
-  `image` varchar(255) NOT NULL
+  `image` varchar(255) DEFAULT NULL,
+  `createAt` datetime NOT NULL,
+  `updateAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menus`
+--
+
+INSERT INTO `menus` (`id`, `kategoriId`, `namaMenu`, `harga`, `stok`, `image`, `createAt`, `updateAt`) VALUES
+(1, 1, 'Americano', 18000, 100, '', '2025-11-18 05:12:30', '2025-11-18 05:12:30');
 
 -- --------------------------------------------------------
 
@@ -87,6 +96,13 @@ CREATE TABLE `transactions` (
   `metodeBayar` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `userId`, `namaCust`, `tanggal`, `totalHarga`, `metodeBayar`) VALUES
+(1, 6, 'Ben', '2025-11-18', 80000, 'QRIS');
+
 -- --------------------------------------------------------
 
 --
@@ -99,15 +115,17 @@ CREATE TABLE `users` (
   `password` text NOT NULL,
   `role` enum('Kasir','Admin','Pelanggan','') NOT NULL,
   `username` varchar(50) NOT NULL,
-  `token` text DEFAULT NULL
+  `token` text DEFAULT NULL,
+  `createAt` datetime NOT NULL,
+  `updateAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `namaUser`, `password`, `role`, `username`, `token`) VALUES
-(5, 'Admin 1', '$2y$10$g6jFPgGbewCCXZFtWlIG4ekSWaAu75.v618pbKBhMazrqcxFmd1bu', 'Admin', 'admin', '98fbd5645a86cae14fbc1478c9fa46362516b96f73bb91f19e14767e579a7cf1');
+INSERT INTO `users` (`id`, `namaUser`, `password`, `role`, `username`, `token`, `createAt`, `updateAt`) VALUES
+(6, 'Bina', '1234', 'Kasir', 'binabina', NULL, '2025-11-18 07:34:25', '2025-11-18 07:34:25');
 
 --
 -- Indexes for dumped tables
@@ -123,19 +141,23 @@ ALTER TABLE `categories`
 -- Indexes for table `menus`
 --
 ALTER TABLE `menus`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kategoriId` (`kategoriId`);
 
 --
 -- Indexes for table `transactiondetails`
 --
 ALTER TABLE `transactiondetails`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `menuId` (`menuId`),
+  ADD KEY `transaksiId` (`transaksiId`);
 
 --
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userId` (`userId`);
 
 --
 -- Indexes for table `users`
@@ -157,7 +179,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `transactiondetails`
@@ -169,13 +191,36 @@ ALTER TABLE `transactiondetails`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `menus`
+--
+ALTER TABLE `menus`
+  ADD CONSTRAINT `menus_ibfk_1` FOREIGN KEY (`kategoriId`) REFERENCES `categories` (`id`);
+
+--
+-- Constraints for table `transactiondetails`
+--
+ALTER TABLE `transactiondetails`
+  ADD CONSTRAINT `transactiondetails_ibfk_1` FOREIGN KEY (`menuId`) REFERENCES `menus` (`id`),
+  ADD CONSTRAINT `transactiondetails_ibfk_2` FOREIGN KEY (`transaksiId`) REFERENCES `transactions` (`id`);
+
+--
+-- Constraints for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
